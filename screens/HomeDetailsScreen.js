@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 const HomeDetailsScreen = () => {
   return (
@@ -8,9 +8,9 @@ const HomeDetailsScreen = () => {
         <View style={styles.heading}>
           <Text style={styles.title}>Modern 3-bedroom flat</Text>
         </View>
-      </View>{' '}
+      </View>
       <View>
-        <Image source={'image'} />
+        <Image source={'https://picsum.photos/200/300'} />
       </View>
       <View style={styles.group}>
         <Text style={styles.label}>Home Type:</Text>

@@ -15,7 +15,7 @@ const stackNavigator = () => (
   <Stack.Navigator>
     <Stack.Screen name="HomeList" component={HomeListScreen} options={{ title: 'HomeHunt' }} />
     <Stack.Screen name="HomeDetails" component={HomeDetailsScreen} />
-    <Stack.Screen name="AddHomeScreen" component={AddHomeScreen} />
+    <Stack.Screen name="AddHome" component={AddHomeScreen} />
   </Stack.Navigator>
 );
 

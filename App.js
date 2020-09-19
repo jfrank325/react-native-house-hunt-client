@@ -7,8 +7,8 @@ import { Provider } from 'react-redux';
 
 export default function App() {
   return (
-    <Provider>
-      <AppNavigator />;
+    <Provider store={store}>
+      <AppNavigator />
     </Provider>
   );
 }
