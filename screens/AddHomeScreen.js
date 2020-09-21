@@ -1,39 +1,151 @@
-import React from 'react';
-import { Button, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useState } from 'react';
+import {
+  Button,
+  KeyboardAvoidingView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
+import { Formik } from 'formik';
+import * as yup from 'yup';
+import { useDispatch } from 'react-redux';
+import * as houseAction from '../redux/actions/houseAction';
+
+const formSchema = yup.object({
+  title: yup.string().required().min(3).max(50),
+  price: yup.number().required(),
+  yearBuilt: yup.number().required(),
+  image: yup.string().required(),
+  address: yup.string().required().min(10).max(50),
+  description: yup.string().required().min(10),
+  homeType: yup.string().required(),
+});
 
 const AddHomeScreen = () => {
-  return (
-    <ScrollView>
-      <View style={styles.form}>
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Title</Text>
-          <TextInput style={styles.input} />
-        </View>
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Home Type</Text>
-          <TextInput style={styles.input} />
-        </View>
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Price</Text>
-          <TextInput style={styles.input} />
-        </View>
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Year Built</Text>
-          <TextInput style={styles.input} />
-        </View>
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Address</Text>
-          <TextInput style={styles.input} multiline />
-        </View>
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Description</Text>
-          <TextInput style={styles.input} multiline />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button title="Add Home" />
-        </View>
+  const [isLoading, setIsLoading] = useState(false);
+  if (isLoading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" />
       </View>
-    </ScrollView>
+    );
+  }
+  const dispatch = useDispatch();
+  return (
+    <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100} style={{ flex: 1 }}>
+      <ScrollView>
+        <Formik
+          initialValues={{
+            title: '',
+            image: '',
+            homeType: '',
+            price: '',
+            yearBuilt: '',
+            address: '',
+            description: '',
+          }}
+          validationSchema={formSchema}
+          onSubmit={(values) => {
+            setIsLoading(true);
+            dispatch(houseAction.createHome(values))
+              .then(() => {
+                setIsLoading(false);
+                Alert.alert('Created Successfully');
+              })
+              .catch(() => {
+                setIsLoading(false);
+                Alert.alert('An error occured. Try Again', [{ text: 'OK' }]);
+              });
+          }}
+        >
+          {(props) => (
+            <View style={styles.form}>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Title</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={props.handleChange('title')}
+                  onBlur={props.handleBlur('title')}
+                  value={props.values.title}
+                />
+                <Text style={styles.error}>{props.touched.title && props.errors.title}</Text>
+              </View>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Image Url</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={props.handleChange('image')}
+                  onBlur={props.handleBlur('image')}
+                  value={props.values.image}
+                />
+                <Text>{props.touched.image && props.errors.image}</Text>
+              </View>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Home Type</Text>
+                <TextInput
+                  style={styles.input}
+                  onBlur={props.handleBlur('homeType')}
+                  onChangeText={props.handleChange('homeType')}
+                  value={props.values.homeType}
+                />
+                <Text>{props.touched.homeType && props.errors.title}</Text>
+              </View>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Price</Text>
+                <TextInput
+                  style={styles.input}
+                  onBlur={props.handleBlur('price')}
+                  keyboardType="numeric"
+                  onChangeText={props.handleChange('price')}
+                  value={props.values.price}
+                />
+                <Text>{props.touched.price && props.errors.price}</Text>
+              </View>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Year Built</Text>
+                <TextInput
+                  style={styles.input}
+                  onBlur={props.handleBlur('yearBuilt')}
+                  keyboardType="numeric"
+                  onChangeText={props.handleChange('yearBuilt')}
+                  value={props.values.yearBuilt}
+                />
+                <Text>{props.touched.yearBuilt && props.errors.yearBuilt}</Text>
+              </View>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Address</Text>
+                <TextInput
+                  style={styles.input}
+                  onBlur={props.handleBlur('address')}
+                  onChangeText={props.handleChange('address')}
+                  value={props.values.address}
+                  multiline
+                />
+                <Text>{props.touched.address && props.errors.address}</Text>
+              </View>
+              <View style={styles.formGroup}>
+                <Text style={styles.label}>Description</Text>
+                <TextInput
+                  style={styles.input}
+                  onBlur={props.handleBlur('description')}
+                  onChangeText={props.handleChange('description')}
+                  value={props.values.description}
+                  multiline
+                />
+                <Text>{props.touched.description && props.errors.description}</Text>
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button title="Add Home" onPress={props.handleSubmit} />
+              </View>
+            </View>
+          )}
+        </Formik>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -60,5 +172,13 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 20,
+  },
+  error: {
+    color: 'red',
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

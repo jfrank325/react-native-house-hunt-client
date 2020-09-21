@@ -1,23 +1,32 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const Card = ({ navigation }) => {
+const Card = ({ navigation, house }) => {
+  const { title, address, homeType, description, price, image, yearBuilt, _id } = house;
   return (
-    <TouchableOpacity onPress={() => navigation.navigate('HomeDetails')}>
+    <TouchableOpacity
+      onPress={() =>
+        navigation.navigate('HomeDetails', {
+          houseId: _id,
+        })
+      }
+    >
       <View style={styles.card}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>House</Text>
+          <Text style={styles.title}>{title.length > 30 ? title.slice(0, 30) + '...' : title}</Text>
         </View>
         <View style={styles.imageContainer}>
-          <ImageBackground style={styles.image}>
-            <Text style={styles.price}>$230000</Text>
+          <ImageBackground source={{ uri: image }} style={styles.image}>
+            <Text style={styles.price}>{price}</Text>
             <View style={styles.year}>
-              <Text style={styles.yearText}>2020</Text>
+              <Text style={styles.yearText}>{yearBuilt}</Text>
             </View>
           </ImageBackground>
         </View>
         <View style={styles.description}>
-          <Text style={styles.descriptionText}>Looks like a house</Text>
+          <Text style={styles.descriptionText}>
+            {description.length > 100 ? description.slice(0, 100) + '...' : description}
+          </Text>
         </View>
       </View>
     </TouchableOpacity>
